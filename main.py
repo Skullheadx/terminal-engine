@@ -1,20 +1,20 @@
 import time
 
-from engine import Engine
+from terminalengine import TerminalEngine as TE
 
 
 def main():
-    engine = Engine()
+    window = TE()
 
     is_running = True
 
     while is_running:
-        for event, key in engine.Event().get():
-            if event == engine.Event.QUIT:
+        for event, key in window.Event().get():
+            if event == window.Event.QUIT:
                 is_running = False
                 break
 
-        engine.update()
+        window.update()
         time.sleep(0.1)
 
 

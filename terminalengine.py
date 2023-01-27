@@ -4,7 +4,7 @@ from grid import Grid
 from renderer import Renderer
 
 
-class Engine:
+class TerminalEngine:
     def __init__(self):
         self.grid = Grid()
         self.renderer = Renderer()
