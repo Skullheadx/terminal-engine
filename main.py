@@ -1,5 +1,9 @@
+from engine import Engine
+
+
 def main():
-    print("Terminal Engine")
+    engine = Engine()
+    engine.run()
 
 
 if __name__ == "__main__":
