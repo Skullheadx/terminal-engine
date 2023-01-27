@@ -1,10 +1,10 @@
 import time
 
-from terminalengine import TerminalEngine as TE
+from terminalengine import TerminalEngine
 
 
 def main():
-    window = TE()
+    window = TerminalEngine()
 
     is_running = True
 
