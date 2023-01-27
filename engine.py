@@ -1,6 +1,5 @@
 from grid import Grid
 from renderer import Renderer
-import time
 
 
 class Engine:
@@ -9,9 +8,7 @@ class Engine:
         self.renderer = Renderer()
         self.renderer.render(self.grid)
 
-    def run(self):
-        while True:
-            self.renderer.render(self.grid)
-            self.grid.update()
-            time.sleep(1)
+    def update(self):
+        self.renderer.render(self.grid)
+        self.grid.update()
 
