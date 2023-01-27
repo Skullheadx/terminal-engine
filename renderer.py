@@ -9,8 +9,8 @@ class Renderer:
     def render(self, grid):
         self.clear()  # clear the screen
 
-        frame = ["".join(tuple(map(str, i))) for i in grid.grid]  # create the frame
-        print(*frame, sep='\n')  # print the frame
+        frame = "\n".join(["".join(tuple(map(str, i))) for i in grid.grid])  # create the frame
+        print(frame, end='\r')  # print the frame
 
         # old code
         # for i in range(grid.screen_height):
