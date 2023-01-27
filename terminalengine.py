@@ -5,8 +5,11 @@ from renderer import Renderer
 
 
 class TerminalEngine:
-    def __init__(self):
-        self.grid = Grid()  # create the grid
+    def __init__(self, width=80, height=24):
+        self.SCREEN_WIDTH = width  # set the screen width
+        self.SCREEN_HEIGHT = height  # set the screen height
+
+        self.grid = Grid(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)  # create the grid
         self.renderer = Renderer()  # create the renderer
         self.event = self.Event()  # create the event handler
 

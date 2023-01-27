@@ -4,7 +4,7 @@ from terminalengine import TerminalEngine
 
 
 def main():  # main function
-    window = TerminalEngine()  # create the window
+    window = TerminalEngine(25, 10)  # create the window
 
     is_running = True
     while is_running:  # main loop
@@ -14,7 +14,7 @@ def main():  # main function
                 break
 
         window.update()  # update the window
-        time.sleep(0.1)  # sleep for 0.1 seconds
+        time.sleep(0.5)  # sleep for 0.5 seconds
 
 
 if __name__ == "__main__":  # if the file is being run directly
