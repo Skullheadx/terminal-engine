@@ -1,7 +1,7 @@
+import pynput.keyboard as keyboard
+
 from grid import Grid
 from renderer import Renderer
-import pynput.keyboard as keyboard
-import threading
 
 
 class Engine:

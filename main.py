@@ -1,5 +1,6 @@
-from engine import Engine
 import time
+
+from engine import Engine
 
 
 def main():
