@@ -50,6 +50,8 @@ if __name__ == "__main__":
     #     key = stdscr.getkey()
     #     if key == "q":
     #         break
+
+    
     # stdscr.nodelay(True)
     #
     # x, y = 0, 0
