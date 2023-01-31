@@ -4,6 +4,12 @@ from grid import Grid
 from renderer import Renderer
 
 
+import curses
+from curses import wrapper
+from curses.textpad import Textbox, rectangle
+import time
+
+
 class TerminalEngine:
     def __init__(self, width=80, height=24):
         self.SCREEN_WIDTH = width  # set the screen width
@@ -11,6 +17,9 @@ class TerminalEngine:
 
         self.grid = Grid(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)  # create the grid
         self.renderer = Renderer()  # create the renderer
+
+        wrapper(self.renderer.create_window, self.SCREEN_WIDTH, self.SCREEN_HEIGHT)  # create the window
+
         self.event = self.Event()  # create the event handler
 
     def update(self):  # update the grid and render it

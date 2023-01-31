@@ -1,15 +1,17 @@
-import curses
-from curses import wrapper
-from curses.textpad import Textbox, rectangle
-import time
+from terminalengine import TerminalEngine
 
+def main():
+    engine = TerminalEngine()
+    while True:
+        for event in TerminalEngine.Event.events:
+            if event[0] == TerminalEngine.Event.QUIT:
+                break
 
-def main(stdscr):
-
+        engine.update()
 
 
 if __name__ == "__main__":
-    wrapper(main)
+    main()
 
 
     # # stdscr.clear()
