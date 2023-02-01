@@ -11,15 +11,35 @@ from framebuffer import FrameBuffer
 
 class TerminalEngine:
     terminal_size = [os.get_terminal_size().columns, os.get_terminal_size().lines - 1]
-
     frame = FrameBuffer(terminal_size[0], terminal_size[1])
-
+    char = '█'
     def __init__(self, update, width=80, height=24):
+        try:
+            self.stdscr = curses.initscr()
+
+            curses.noecho()
+            curses.cbreak()
+
+            self.stdscr.keypad(True)
+
+            self.stdscr.nodelay(True)
+
+            try:
+                curses.start_color()
+            except:
+                pass
+
+        finally:
+            if 'self.stdscr' in locals():
+                self.stdscr.keypad(False)
+                curses.echo()
+                curses.nocbreak()
+                curses.endwin()
+
         self.event = self.Event()
         self.draw = self.Draw(self.frame)
-
+        self.color = self.Color()
         self.run(update)
-
     def update(self, stdscr):
         # stdscr.clear()
         pass
@@ -27,50 +47,28 @@ class TerminalEngine:
     def render(self, stdscr):
         for i in range(len(self.frame.frame_buffer)):
             for j in range(len(self.frame.frame_buffer[i])):
-                stdscr.addstr(i, j, str(self.frame.frame_buffer[i][j]))
+                if self.frame.frame_buffer[i][j] is not None:
+                    stdscr.addstr(i, j, self.char, self.frame.frame_buffer[i][j])
 
         stdscr.refresh()
 
     def run(self, update):
-        try:
-            stdscr = curses.initscr()
-
-            curses.noecho()
-            curses.cbreak()
-
-            stdscr.keypad(True)
-
-            stdscr.nodelay(True)
-
-            try:
-                curses.start_color()
-            except:
-                pass
-
-            color = self.Color()
-
-            is_running = True
+        is_running = True
+        prev_time = time.time()
+        while is_running:
+            delta_time = time.time() - prev_time
             prev_time = time.time()
-            delta_time = time.time()
-            while is_running:
-                delta_time = time.time() - prev_time
-                prev_time = time.time()
 
-                self.event.update(stdscr)
-                for event in self.event.get():
-                    if event == 'q':
-                        is_running = False
-                        break
-                update(self, delta_time)
-                self.update(stdscr)
-                self.render(stdscr)
+            self.event.update(self.stdscr)
+            for event in self.event.get():
+                if event == 'q':
+                    is_running = False
+                    break
+            update(self, delta_time)
+            self.update(self.stdscr)
+            self.render(self.stdscr)
 
-        finally:
-            if 'stdscr' in locals():
-                stdscr.keypad(False)
-                curses.echo()
-                curses.nocbreak()
-                curses.endwin()
+
 
     class Event:
 
@@ -91,6 +89,16 @@ class TerminalEngine:
             return output
 
     class Color:
+        RED = None
+        GREEN = None
+        YELLOW = None
+        BLUE = None
+        WHITE = None
+        BLACK = None
+        CYAN = None
+        MAGENTA = None
+
+
         def __init__(self):
             curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLUE)
             curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)

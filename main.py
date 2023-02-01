@@ -2,7 +2,7 @@ from terminalengine import TerminalEngine
 
 
 def update(terminal_engine, dt):
-    terminal_engine.draw.rect(10, 2, 10, 10, 1)
+    terminal_engine.draw.rect(10, 2, 10, 10, terminal_engine.color.RED)
 
 
 def main():
