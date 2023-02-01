@@ -1,5 +1,4 @@
 - collision
-- frame updates
 - images (opencv prolly)
 
 later:

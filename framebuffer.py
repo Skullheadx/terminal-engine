@@ -22,6 +22,7 @@ class FrameBuffer:
                 display_y < 0 or display_y >= self.terminal_height:
             return 0
         return self.frame_buffer[display_y][display_x]
+
     def set_pixel(self, x, y, color):
         display_x = int(x * self.x_scale)
         display_y = int(y * self.y_scale)
@@ -38,4 +39,4 @@ class FrameBuffer:
                         display_x + j < 0 or display_x + j >= self.terminal_width:
                     continue
                 self.frame_buffer[display_y + i][display_x + j] = color
-        # self.frame_buffer[display_y][display_x] = color
+        self.frame_buffer[display_y][display_x] = color
