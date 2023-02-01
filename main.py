@@ -5,8 +5,7 @@ def update(dt):
     pass
 
 def main():
-    engine = TerminalEngine()
-    engine.run(update)
+    engine = TerminalEngine(update)
 
 
 

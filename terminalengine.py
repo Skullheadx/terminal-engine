@@ -10,9 +10,11 @@ from framebuffer import FrameBuffer
 
 class TerminalEngine:
 
-    def __init__(self, width=80, height=24):
+    def __init__(self, update, width=80, height=24):
         self.event = self.Event()
         self.frame = FrameBuffer(width, height)
+
+        self.run(update)
 
     def update(self, stdscr):
         # stdscr.clear()
@@ -40,6 +42,8 @@ class TerminalEngine:
                 curses.start_color()
             except:
                 pass
+
+            color = self.Color()
 
             is_running = True
             prev_time = time.time()
@@ -83,20 +87,21 @@ class TerminalEngine:
             return output
 
     class Color:
-        curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
-        curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
-        curses.init_pair(3, curses.COLOR_YELLOW, curses.COLOR_BLACK)
-        curses.init_pair(4, curses.COLOR_BLUE, curses.COLOR_BLACK)
-        curses.init_pair(5, curses.COLOR_WHITE, curses.COLOR_BLACK)
-        curses.init_pair(6, curses.COLOR_BLACK, curses.COLOR_WHITE)
-        curses.init_pair(7, curses.COLOR_CYAN, curses.COLOR_BLACK)
-        curses.init_pair(8, curses.COLOR_MAGENTA, curses.COLOR_BLACK)
+        def __init__(self):
+            curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLUE)
+            curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
+            curses.init_pair(3, curses.COLOR_YELLOW, curses.COLOR_BLACK)
+            curses.init_pair(4, curses.COLOR_BLUE, curses.COLOR_BLACK)
+            curses.init_pair(5, curses.COLOR_WHITE, curses.COLOR_BLACK)
+            curses.init_pair(6, curses.COLOR_BLACK, curses.COLOR_WHITE)
+            curses.init_pair(7, curses.COLOR_CYAN, curses.COLOR_BLACK)
+            curses.init_pair(8, curses.COLOR_MAGENTA, curses.COLOR_BLACK)
+            self.RED = curses.color_pair(1)
+            self.GREEN = curses.color_pair(2)
+            self.YELLOW = curses.color_pair(3)
+            self.BLUE = curses.color_pair(4)
+            self.WHITE = curses.color_pair(5)
+            self.BLACK = curses.color_pair(6)
+            self.CYAN = curses.color_pair(7)
+            self.MAGENTA = curses.color_pair(8)
 
-        RED = curses.color_pair(1)
-        GREEN = curses.color_pair(2)
-        YELLOW = curses.color_pair(3)
-        BLUE = curses.color_pair(4)
-        WHITE = curses.color_pair(5)
-        BLACK = curses.color_pair(6)
-        CYAN = curses.color_pair(7)
-        MAGENTA = curses.color_pair(8)
