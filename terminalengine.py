@@ -6,18 +6,22 @@ import os
 import math
 import threading
 
+from framebuffer import FrameBuffer
 
 class TerminalEngine:
 
-    def __init__(self):
+    def __init__(self, width=80, height=24):
         self.event = self.Event()
+        self.frame = FrameBuffer(width, height)
 
     def update(self, stdscr):
         # stdscr.clear()
         pass
 
     def render(self, stdscr):
-        stdscr.addstr(0, 0, "Hello World!")
+        for i in range(len(self.frame.frameBuffer)):
+            for j in range(len(self.frame.frameBuffer[i])):
+                stdscr.addstr(i, j, str(self.frame.frameBuffer[i][j]))
 
         stdscr.refresh()
 
