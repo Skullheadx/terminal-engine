@@ -12,7 +12,8 @@ class TerminalEngine:
 
     def __init__(self, update, width=80, height=24):
         self.event = self.Event()
-        self.frame = FrameBuffer(width, height)
+        terminal_size = [os.get_terminal_size().columns, os.get_terminal_size().lines-1]
+        self.frame = FrameBuffer(terminal_size[0], terminal_size[1])
 
         self.run(update)
 
@@ -21,9 +22,9 @@ class TerminalEngine:
         pass
 
     def render(self, stdscr):
-        for i in range(len(self.frame.frameBuffer)):
-            for j in range(len(self.frame.frameBuffer[i])):
-                stdscr.addstr(i, j, str(self.frame.frameBuffer[i][j]))
+        for i in range(len(self.frame.frame_buffer)):
+            for j in range(len(self.frame.frame_buffer[i])):
+                stdscr.addstr(i, j, str(self.frame.frame_buffer[i][j]))
 
         stdscr.refresh()
 
