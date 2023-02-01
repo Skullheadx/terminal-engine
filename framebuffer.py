@@ -1,6 +1,3 @@
-from math import ceil
-
-
 class FrameBuffer:
 
     def __init__(self, terminal_width, terminal_height, screen_width, screen_height, ):
