@@ -10,8 +10,6 @@ from framebuffer import FrameBuffer
 
 
 class TerminalEngine:
-    terminal_size = [os.get_terminal_size().columns, os.get_terminal_size().lines - 1]
-    frame = FrameBuffer(terminal_size[0], terminal_size[1])
     char = '█'
 
     def __init__(self, update, width=80, height=24):
@@ -36,6 +34,11 @@ class TerminalEngine:
                 curses.echo()
                 curses.nocbreak()
                 curses.endwin()
+        
+        self.SCREEN_WIDTH, self.SCREEN_HEIGHT = width, height
+        
+        self.TERMINAL_SIZE = [os.get_terminal_size().columns, os.get_terminal_size().lines - 1]
+        self.frame = FrameBuffer(self.TERMINAL_SIZE[0], self.TERMINAL_SIZE[1], self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
 
         self.event = self.Event()
         self.draw = self.Draw(self.frame)
