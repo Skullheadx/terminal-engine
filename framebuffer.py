@@ -12,6 +12,16 @@ class FrameBuffer:
         self.x_scale = self.terminal_width / self.screen_width
         self.y_scale = self.terminal_height / self.screen_height
 
+    def clear(self):
+        self.frame_buffer = [[0 for i in range(self.terminal_width)] for j in range(self.terminal_height)]
+
+    def get_pixel(self, x, y):
+        display_x = int(x * self.x_scale)
+        display_y = int(y * self.y_scale)
+        if display_x < 0 or display_x >= self.terminal_width or \
+                display_y < 0 or display_y >= self.terminal_height:
+            return 0
+        return self.frame_buffer[display_y][display_x]
     def set_pixel(self, x, y, color):
         display_x = int(x * self.x_scale)
         display_y = int(y * self.y_scale)
