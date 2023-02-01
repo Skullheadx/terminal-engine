@@ -13,6 +13,7 @@ class TerminalEngine:
     terminal_size = [os.get_terminal_size().columns, os.get_terminal_size().lines - 1]
     frame = FrameBuffer(terminal_size[0], terminal_size[1])
     char = '█'
+
     def __init__(self, update, width=80, height=24):
         try:
             self.stdscr = curses.initscr()
@@ -40,6 +41,7 @@ class TerminalEngine:
         self.draw = self.Draw(self.frame)
         self.color = self.Color()
         self.run(update)
+
     def update(self, stdscr):
         # stdscr.clear()
         pass
@@ -68,8 +70,6 @@ class TerminalEngine:
             self.update(self.stdscr)
             self.render(self.stdscr)
 
-
-
     class Event:
 
         def __init__(self):
@@ -97,7 +97,6 @@ class TerminalEngine:
         BLACK = None
         CYAN = None
         MAGENTA = None
-
 
         def __init__(self):
             curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLUE)
