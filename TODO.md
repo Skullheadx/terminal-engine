@@ -1,3 +1,15 @@
+- collision
+- frame updates
+- images (opencv prolly)
+
+later:
+- sound
+- mouse
+- text
+- sdk for game development
+
+
+
 - make the engine
 - grid
 - render to the console
