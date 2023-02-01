@@ -21,10 +21,9 @@ class Renderer:
     def render(self, grid):
         self.stdscr.clear()  # clear the screen
         # frame = "\n".join(["".join(tuple(map(str, i))) for i in grid.grid])  # create the frame
-        for i in grid.grid:
-            for j in i:
-                self.stdscr.addstr(str(j))
-            self.stdscr.addstr("")
+        for i in range(len(grid.grid)):
+            for j in range(len(grid.grid[i])):
+                self.stdscr.addstr(i, j, str(grid.grid[i][j]))
         self.stdscr.refresh()  # refresh the screen
 
 
