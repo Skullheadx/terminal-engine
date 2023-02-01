@@ -2,6 +2,8 @@ from terminalengine import TerminalEngine
 
 
 def update(terminal_engine, dt):
+    terminal_engine.draw.ellipse(10, 15, 10, 10, terminal_engine.color.BLUE)
+    
     # NETHER PORTAL
     r = terminal_engine.Rect(3, 5, 10, 10, terminal_engine.color.MAGENTA)
     terminal_engine.draw.rect2(r, thickness=2)

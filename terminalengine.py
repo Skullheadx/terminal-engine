@@ -37,7 +37,7 @@ class TerminalEngine:
 
         self.SCREEN_WIDTH, self.SCREEN_HEIGHT = width, height
 
-        self.TERMINAL_SIZE = [os.get_terminal_size().columns, os.get_terminal_size().lines - 1]
+        self.TERMINAL_SIZE = [math.floor(os.get_terminal_size().columns/2), os.get_terminal_size().lines - 1]
         self.frame = FrameBuffer(self.TERMINAL_SIZE[0], self.TERMINAL_SIZE[1], self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
 
         self.event = self.Event()
@@ -53,7 +53,9 @@ class TerminalEngine:
         for i in range(len(self.frame.frame_buffer)):
             for j in range(len(self.frame.frame_buffer[i])):
                 if self.frame.frame_buffer[i][j] is not None:
-                    stdscr.addstr(i, j, self.char, self.frame.frame_buffer[i][j])
+                    stdscr.addstr(i, j*2, self.char, self.frame.frame_buffer[i][j])
+                    if(j*2+1 < self.TERMINAL_SIZE[0]*2):
+                        stdscr.addstr(i, j*2+1, self.char, self.frame.frame_buffer[i][j])
 
         stdscr.refresh()
 
@@ -154,6 +156,16 @@ class TerminalEngine:
                 b = y1 - m * x1
                 for i in range((x2 - x1) * self.line_precision):
                     self.frame.set_pixel(x1 + i / self.line_precision, m * (x1 + i / self.line_precision) + b, color)
+        
+        def check_point(self, h, k, x, y, a, b):
+            return (pow((x - h), 2) / pow(a, 2)) + (pow((y - k), 2) / pow(b, 2));
+        
+        def ellipse(self, x, y, width, height, color):
+            for i in range(1, height*2):
+                for j in range(1, width*2):
+                    check = self.check_point(width, height, j, i, width, height)
+                    if(check <= 1):
+                        self.frame.set_pixel(x + j - 1 - width, y + i - 1 - height, color)
 
     class Rect:
         def __init__(self, x, y, width, height, color):
