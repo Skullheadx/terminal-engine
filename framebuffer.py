@@ -7,3 +7,6 @@ class FrameBuffer:
         
     def update(self):
         pass
+
+    def set_pixel(self, x, y, color):
+        self.frame_buffer[y][x] = 1

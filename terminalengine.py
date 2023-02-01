@@ -9,11 +9,12 @@ import threading
 from framebuffer import FrameBuffer
 
 class TerminalEngine:
+    terminal_size = [os.get_terminal_size().columns, os.get_terminal_size().lines - 1]
 
+    frame = FrameBuffer(terminal_size[0], terminal_size[1])
     def __init__(self, update, width=80, height=24):
         self.event = self.Event()
-        terminal_size = [os.get_terminal_size().columns, os.get_terminal_size().lines-1]
-        self.frame = FrameBuffer(terminal_size[0], terminal_size[1])
+        self.draw = self.Draw(self.frame)
 
         self.run(update)
 
@@ -46,6 +47,7 @@ class TerminalEngine:
 
             color = self.Color()
 
+
             is_running = True
             prev_time = time.time()
             delta_time = time.time()
@@ -58,7 +60,7 @@ class TerminalEngine:
                     if event == 'q':
                         is_running = False
                         break
-                update(delta_time)
+                update(self, delta_time)
                 self.update(stdscr)
                 self.render(stdscr)
 
@@ -106,3 +108,11 @@ class TerminalEngine:
             self.CYAN = curses.color_pair(7)
             self.MAGENTA = curses.color_pair(8)
 
+    class Draw:
+
+        def __init__(self, frame):
+            self.frame = frame
+        def rect(self, x, y, width, height, color):
+            for i in range(height):
+                for j in range(width):
+                    self.frame.set_pixel(x+j, y+i, color)
