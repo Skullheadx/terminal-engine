@@ -10,7 +10,7 @@ from framebuffer import FrameBuffer
 
 
 class TerminalEngine:
-    terminal_size = [os.get_terminal_size().columns, os.get_terminal_size().lines - 1]
+    terminal_size = [math.ceil(os.get_terminal_size().columns/2), (os.get_terminal_size().lines - 1)]
     frame = FrameBuffer(terminal_size[0], terminal_size[1])
     char = '█'
     def __init__(self, update, width=80, height=24):
@@ -48,7 +48,9 @@ class TerminalEngine:
         for i in range(len(self.frame.frame_buffer)):
             for j in range(len(self.frame.frame_buffer[i])):
                 if self.frame.frame_buffer[i][j] is not None:
-                    stdscr.addstr(i, j, self.char, self.frame.frame_buffer[i][j])
+                    stdscr.addstr(i, j*2, self.char, self.frame.frame_buffer[i][j])
+                    if(j*2+1 < os.get_terminal_size().columns):
+                        stdscr.addstr(i, j*2+1, self.char, self.frame.frame_buffer[i][j])
 
         stdscr.refresh()
 
@@ -126,3 +128,13 @@ class TerminalEngine:
             for i in range(height):
                 for j in range(width):
                     self.frame.set_pixel(x + j, y + i, color)
+        
+        def check_point(self, h, k, x, y, a, b):
+            return (pow((x - h), 2) / pow(a, 2)) + (pow((y - k), 2) / pow(b, 2));
+
+        def ellipse(self, x, y, width, height, color):
+            for i in range(1, height*2):
+                for j in range(1, width*2):
+                    check = self.check_point(width, height, j, i, width, height)
+                    if(check <= 1):
+                        self.frame.set_pixel(x + j - 1 - width, y + i - 1 - height, color)
