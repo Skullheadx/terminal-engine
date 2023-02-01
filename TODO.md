@@ -1,13 +1,23 @@
-- collision
-- images (opencv prolly)
+# TODO
+- [ ] collision
+- [ ] images (opencv prolly)
 
 later:
-- sound
-- mouse
-- text
-- sdk for game development
+- [ ] sound
+- [ ] mouse
+- [ ] text
+- [ ] sdk for game development
+- [ ] light engine
+- [ ] pathfinding
+- [ ] physics
+- [ ] AI
+- [ ] networking
+- [ ] animation
+- [ ] UI
+- [ ] input
+- [ ] be done with this
 
-
+# DONE
 
 - make the engine
 - grid
@@ -20,6 +30,7 @@ later:
 - import imagess
 - save screenshots
 
+# Ideas
 2D or 3D? 2D is easier to get started with, but 3D is more fun. 3D is also more complicated, but you can get started with 2D and then move to 3D later.
 yes github copilot
 praise the lord

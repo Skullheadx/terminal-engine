@@ -194,3 +194,5 @@ class TerminalEngine:
             if self.x < rect.x + rect.width and self.x + self.width > rect.x and self.y < rect.y + rect.height and self.y + self.height > rect.y:
                 return True
             return False
+
+    
