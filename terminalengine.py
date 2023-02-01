@@ -50,11 +50,7 @@ class TerminalEngine:
 
                 self.event.update(stdscr)
                 for event in self.event.get():
-                    stdscr.addstr(2, 0, event)
-                    stdscr.refresh()
                     if event == 'q':
-                        stdscr.addstr(1, 0, "Quitting... ")
-                        stdscr.refresh()
                         is_running = False
                         break
                 update(delta_time)
