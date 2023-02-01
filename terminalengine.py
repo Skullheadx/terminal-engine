@@ -12,7 +12,7 @@ from framebuffer import FrameBuffer
 class TerminalEngine:
     char = '█'
 
-    def __init__(self, update, width=80, height=24):
+    def __init__(self, width=80, height=24):
         try:
             self.stdscr = curses.initscr()
 
@@ -43,9 +43,9 @@ class TerminalEngine:
         self.event = self.Event()
         self.draw = self.Draw(self.frame)
         self.color = self.Color()
-        self.run(update)
 
     def update(self, stdscr):
+        self.frame.clear()
         # stdscr.clear()
         pass
 
@@ -56,6 +56,10 @@ class TerminalEngine:
                     stdscr.addstr(i, j*2, self.char, self.frame.frame_buffer[i][j])
                     if(j*2+1 < self.TERMINAL_SIZE[0]*2):
                         stdscr.addstr(i, j*2+1, self.char, self.frame.frame_buffer[i][j])
+                else:
+                    stdscr.addstr(i, j*2, self.char, self.color.BLACK)
+                    if(j*2+1 < self.TERMINAL_SIZE[0]*2):
+                        stdscr.addstr(i, j*2+1, self.char, self.color.BLACK)
 
         stdscr.refresh()
 
@@ -63,34 +67,44 @@ class TerminalEngine:
         is_running = True
         prev_time = time.time()
         while is_running:
-            delta_time = time.time() - prev_time
+            delta_time = (time.time() - prev_time) * 1000 # in milliseconds
             prev_time = time.time()
 
             self.event.update(self.stdscr)
-            for event in self.event.get():
+            for event in self.event.get(key='q', clear=False):
                 if event == 'q':
                     is_running = False
                     break
-            update(self, delta_time)
             self.update(self.stdscr)
+            update(self, delta_time)
             self.render(self.stdscr)
+            # time.sleep(0.16)
 
     class Event:
 
         def __init__(self):
             self.events = []
 
+
         def update(self, stdscr):
             try:
                 key = stdscr.getkey()
             except:
                 key = None
-            if key is not None:
+            if key is not None and (len(self.events) == 0 or key != self.events[-1] != key):
                 self.events.append(key)
 
-        def get(self):
-            output = self.events.copy()
-            self.events.clear()
+
+        def get(self, key=None, clear=True):
+            if key is None:
+                output = self.events.copy()
+            else:
+                output = []
+                for event in self.events:
+                    if event == key:
+                        output.append(event)
+            if clear:
+                self.events.clear()
             return output
 
     class Color:
