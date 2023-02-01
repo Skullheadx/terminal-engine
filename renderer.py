@@ -14,7 +14,7 @@ class Renderer:
         self.stdscr = stdscr  # set the screen
 
         self.stdscr.clear()  # clear the screen
-        curses.resize_term(height, width)  # resize the screen
+        curses.resize_term(height, width + 5)  # resize the screen
         self.stdscr.refresh()  # refresh the screen
 
 
