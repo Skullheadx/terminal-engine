@@ -1,69 +1,52 @@
-import pynput.keyboard as keyboard
-
-from grid import Grid
-from renderer import Renderer
-
-
 import curses
-from curses import wrapper
-from curses.textpad import Textbox, rectangle
 import time
+import random
+import sys
+import os
+import math
+import threading
 
 
 class TerminalEngine:
-    def __init__(self, width=80, height=24):
-        self.SCREEN_WIDTH = width  # set the screen width
-        self.SCREEN_HEIGHT = height  # set the screen height
 
-        self.grid = Grid(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)  # create the grid
-        self.renderer = Renderer()  # create the renderer
+    def __init__(self):
+        pass
 
-        wrapper(self.renderer.create_window, self.SCREEN_WIDTH, self.SCREEN_HEIGHT)  # create the window
+    def update(self, stdscr):
+        stdscr.clear()
 
-        self.event = self.Event()  # create the event handler
+    def render(self, stdscr):
+        stdscr.addstr(0, 0, "Hello World!")
 
-    def update(self):  # update the grid and render it
-        self.renderer.render(self.grid)
-        self.grid.update()
+        stdscr.refresh()
 
-    class Event:  # event handler
-        events = []  # list of events
-        keys = {}  # dictionary of keys
+    def run(self, update):
+        try:
+            stdscr = curses.initscr()
 
-        # Key Codes
-        KEYDOWN = 0  # keydown event
-        KEYUP = 1  # keyup event
-        QUIT = 2  # quit event
+            curses.noecho()
+            curses.cbreak()
 
-        def on_press(self, key):
-            if key not in self.keys:  # if the key is not in the keys list, add it
-                self.keys[key] = False
+            stdscr.keypad(True)
 
-            if self.keys[key]:  # if the key is already pressed, return
-                return
-            self.keys[key] = True  # set the key to pressed
+            try:
+                curses.start_color()
+            except:
+                pass
 
-            if key == keyboard.Key.esc:  # if the key is the escape key, add the quit event to the events list
-                self.events.append((self.QUIT, None))
-            else:  # otherwise, add the keydown event to the events list
-                self.events.append((self.KEYDOWN, key))
+            is_running = True
+            prev_time = time.time()
+            delta_time = time.time()
+            while is_running:
+                delta_time = time.time() - prev_time
+                prev_time = time.time()
+                update(delta_time)
+                self.update(stdscr)
+                self.render(stdscr)
 
-        def on_release(self, key):
-            if not self.keys[key]:  # if the key is not pressed, return
-                return
-            self.keys[key] = False  # set the key to not pressed
-            self.events.append((self.KEYUP, key))  # add the keyup event to the events list
-
-        def __init__(self):
-            self.listener = keyboard.Listener(  # create the listener
-                on_press=self.on_press,
-                on_release=self.on_release)  # set the listener to use the on_press and on_release functions
-            self.listener.start()  # start the listener
-
-        def get(self):
-            output = self.events.copy()  # copy the events
-            self.events.clear()  # clear the events
-            return output  # return the events
-
-        def __del__(self):  # destructor
-            self.listener.stop()  # stop the listener
+        finally:
+            if 'stdscr' in locals():
+                stdscr.keypad(False)
+                curses.echo()
+                curses.nocbreak()
+                curses.endwin()
