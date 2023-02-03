@@ -44,13 +44,13 @@ class TerminalEngine:
         self.event = self.Event()
         self.draw = self.Draw(self.frame)
         self.color = self.Color()
-        self.renderer = Renderer(self.frame, self.color, self.TERMINAL_SIZE[0], self.TERMINAL_SIZE[1], self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
+        self.renderer = Renderer(self.frame, self.color, self.TERMINAL_SIZE[0], self.TERMINAL_SIZE[1],
+                                 self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
 
     def update(self, stdscr):
         self.frame.clear()
         # stdscr.clear()
         pass
-
 
     def run(self, update):
         is_running = True
