@@ -1,19 +1,19 @@
 class FrameBuffer:
 
-    def __init__(self, terminal_width, terminal_height, screen_width, screen_height, ):
+    def __init__(self, terminal_width, terminal_height, screen_width, screen_height):
         self.screen_width = screen_width
         self.screen_height = screen_height
 
         self.terminal_width = terminal_width
         self.terminal_height = terminal_height
 
-        self.frame_buffer = [[0 for i in range(self.terminal_width)] for j in range(self.terminal_height)]
+        self.frame_buffer = [[None for i in range(self.terminal_width)] for j in range(self.terminal_height)]
 
         self.x_scale = self.terminal_width / self.screen_width
         self.y_scale = self.terminal_height / self.screen_height
 
     def clear(self):
-        self.frame_buffer = [[0 for i in range(self.terminal_width)] for j in range(self.terminal_height)]
+        self.frame_buffer = [[None for i in range(self.terminal_width)] for j in range(self.terminal_height)]
 
     def get_pixel(self, x, y):
         display_x = int(x * self.x_scale)

@@ -8,6 +8,7 @@ import threading
 from itertools import combinations
 
 from framebuffer import FrameBuffer
+from renderer import Renderer
 
 
 class TerminalEngine:
@@ -40,29 +41,16 @@ class TerminalEngine:
         self.SCREEN_WIDTH, self.SCREEN_HEIGHT = width, height
 
         self.frame = FrameBuffer(self.TERMINAL_SIZE[0], self.TERMINAL_SIZE[1], self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
-
         self.event = self.Event()
         self.draw = self.Draw(self.frame)
         self.color = self.Color()
+        self.renderer = Renderer(self.frame, self.color, self.TERMINAL_SIZE[0], self.TERMINAL_SIZE[1], self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
 
     def update(self, stdscr):
         self.frame.clear()
         # stdscr.clear()
         pass
 
-    def render(self, stdscr):
-        for i in range(len(self.frame.frame_buffer)):
-            for j in range(len(self.frame.frame_buffer[i])):
-                if self.frame.frame_buffer[i][j] is not None:
-                    stdscr.addstr(i, j * 2, self.char, self.color.color_dict[self.frame.frame_buffer[i][j]])
-                    if j * 2 + 1 < self.TERMINAL_SIZE[0] * 2:
-                        stdscr.addstr(i, j * 2 + 1, self.char, self.color.color_dict[self.frame.frame_buffer[i][j]])
-                else:
-                    stdscr.addstr(i, j * 2, self.char, self.color.BLACK)
-                    if j * 2 + 1 < self.TERMINAL_SIZE[0] * 2:
-                        stdscr.addstr(i, j * 2 + 1, self.char, self.color.BLACK)
-
-        stdscr.refresh()
 
     def run(self, update):
         is_running = True
@@ -78,7 +66,7 @@ class TerminalEngine:
                     break
             self.update(self.stdscr)
             update(self, delta_time)
-            self.render(self.stdscr)
+            self.renderer.render(self.stdscr)
             # time.sleep(0.16)
 
     class Event:
