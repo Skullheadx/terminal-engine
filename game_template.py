@@ -38,6 +38,9 @@ class Game:
             tengine.draw.rect(19, 12, 2, 4, tengine.color.WHITE)
             self.time -= dt
 
+        r2 = tengine.CollisionRect(37, 5, 10, 10, tengine.color.MAGENTA, collision_layer=0)
+        tengine.draw.rect2(r2)
+
         self.p.update(tengine, dt)
         self.p.draw(tengine)
 

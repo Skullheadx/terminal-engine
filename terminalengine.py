@@ -44,13 +44,20 @@ class TerminalEngine:
         self.event = self.Event()
         self.draw = self.Draw(self.frame)
         self.color = self.Color()
+        self.collision_handler = self.CollisionHandler()
         self.renderer = Renderer(self.frame, self.color, self.TERMINAL_SIZE[0], self.TERMINAL_SIZE[1],
                                  self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
 
     def update(self, stdscr):
         self.frame.clear()
         # stdscr.clear()
-        pass
+        # self.collision_handler.update()
+
+        self.event.update(self.stdscr)
+        for event in self.event.get(key='q', clear=False):
+            if event == 'q':
+                return False
+        return True
 
     def run(self, update):
         is_running = True
@@ -59,12 +66,7 @@ class TerminalEngine:
             delta_time = (time.time() - prev_time) * 1000  # in milliseconds
             prev_time = time.time()
 
-            self.event.update(self.stdscr)
-            for event in self.event.get(key='q', clear=False):
-                if event == 'q':
-                    is_running = False
-                    break
-            self.update(self.stdscr)
+            is_running = self.update(self.stdscr)
             update(self, delta_time)
             self.renderer.render(self.stdscr)
             # time.sleep(0.16)
@@ -160,7 +162,8 @@ class TerminalEngine:
                 for i in range((x2 - x1) * self.line_precision):
                     self.frame.set_pixel(x1 + i / self.line_precision, m * (x1 + i / self.line_precision) + b, color)
 
-        def check_point(self, h, k, x, y, a, b):
+        @staticmethod
+        def check_point(h, k, x, y, a, b):
             return (pow((x - h), 2) / pow(a, 2)) + (pow((y - k), 2) / pow(b, 2))
 
         def ellipse(self, x, y, width, height, color):
@@ -197,10 +200,31 @@ class TerminalEngine:
         def collide_rect(self, rect):
             if self.x < rect.x + rect.width and self.x + self.width > rect.x and \
                     self.y < rect.y + rect.height and self.y + self.height > rect.y:
+
                 return True
             return False
 
-    class Collision:
+    class CollisionRect(Rect):
+        def __init__(self, x, y, width, height, color, collision_layer):
+            super().__init__(x, y, width, height, color)
+            self.collision_layer = collision_layer
+            TerminalEngine.CollisionHandler.collision_layers[collision_layer].append(self)
+
+        def move(self, x, y):
+            super().move(x, 0)
+            if TerminalEngine.CollisionHandler().check_sprite_collision_list(
+                    TerminalEngine.CollisionHandler.collision_layers[self.collision_layer]):
+                super().move(-x, 0)
+
+            super().move(0, y)
+            if TerminalEngine.CollisionHandler().check_sprite_collision_list(
+                    TerminalEngine.CollisionHandler.collision_layers[self.collision_layer]):
+                super().move(0, -y)
+
+        def is_equal(self, other):
+            return self.x == other.x and self.y == other.y and self.width == other.width and self.height == other.height
+
+    class CollisionHandler:
         TOTAL_COLLISION_LAYERS = 10
         collision_layers = {i: [] for i in range(TOTAL_COLLISION_LAYERS)}
 
@@ -211,11 +235,8 @@ class TerminalEngine:
             for layer in self.collision_layers:
                 self.check_sprite_collision_list(self.collision_layers[layer])
 
-        def add_sprite(self, sprite):
-            self.collision_layers[sprite.collision_layer].append(sprite)
-
-        def remove_sprite(self, sprite):
-            self.collision_layers[sprite.collision_layer].remove(sprite)
+        def handle_collision(self, sprite1, sprite2):
+            pass
 
         def clear_layer(self, layer):
             self.collision_layers[layer].clear()
@@ -225,15 +246,15 @@ class TerminalEngine:
                 self.collision_layers[layer].clear()
 
         @staticmethod
-        def check_sprite_collision(sprite1, sprite2):
-            if sprite1.collision_layer == sprite2.collision_layer:
-                return sprite1.rect.collide_rect(sprite2.rect)
+        def check_rect_collision(rect1, rect2):
+            if rect1.collision_layer == rect2.collision_layer and not (rect1.is_equal(rect2)):
+                return rect1.collide_rect(rect2)
             return False
 
         # partition the screen into a grid and only check collision with sprites in the same grid
         def check_sprite_collision_list(self, sprite_list):
             for a, b in self.space_partition(sprite_list):
-                if self.check_sprite_collision(a, b):
+                if self.check_rect_collision(a, b):
                     return True
             return False
 
@@ -272,9 +293,8 @@ class TerminalEngine:
 
     class Sprite:
         def __init__(self, x, y, width, height, color, collision_layer=0):
-            self.rect = TerminalEngine.Rect(x, y, width, height, color)
+            self.rect = TerminalEngine.CollisionRect(x, y, width, height, color, collision_layer)
             self.collision_layer = collision_layer
-            TerminalEngine.Collision().add_sprite(self)
 
         def update(self, delta_time):
             pass
