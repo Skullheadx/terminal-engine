@@ -1,9 +1,9 @@
 # TODO
 - [ ] collision
 - [ ] images (opencv prolly)
-- [ ] better render
-    - [ ] double buffer
-    - [ ] update only to changed pixels
+- [x] better render
+    - [x] double buffer
+    - [x] update only to changed pixels
 
 later:
 - [ ] sound
