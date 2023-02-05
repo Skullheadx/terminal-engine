@@ -52,8 +52,8 @@ class Game:
         self.p.draw(tengine)
 
         self.img = tengine.Image("Untitled.png")
-        self.img.resize(25, 25)
-        self.img.draw(tengine, 0, 0)
+        self.img.resize(15, 15)
+        self.img.draw(tengine, 15, 15)
 
 
 

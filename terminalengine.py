@@ -365,6 +365,8 @@ class TerminalEngine:
         def __init__(self, file_name):
             self.image = cv2.imread(file_name)
             self.width, self.height = self.image.shape[:2]
+            self.rotate(90)
+
 
         def get_pixel(self, x, y):
             return self.image[x, y]
@@ -378,6 +380,12 @@ class TerminalEngine:
         def resize(self, width, height):
             self.image = cv2.resize(self.image, (width, height))
             self.width, self.height = self.image.shape[:2]
+
+        def rotate(self, angle):
+            M = cv2.getRotationMatrix2D((self.width / 2, self.height / 2), angle, 1)
+            self.image = cv2.warpAffine(self.image, M, (self.width, self.height))
+            self.width, self.height = self.image.shape[:2]
+
 
         def draw(self, tengine, x, y):
             tengine.draw.draw_image(self, x, y)
