@@ -1,23 +1,16 @@
 # TODO
 - [ ] collision
-- [ ] images (opencv prolly)
-- [x] better render
-    - [x] double buffer
-    - [x] update only to changed pixels
-
-later:
+- [x] images (opencv prolly)
+- [] better rendering
 - [ ] sound
 - [ ] mouse
-- [ ] text
+- [x] text
 - [ ] sdk for game development
 - [ ] light engine
 - [ ] pathfinding
 - [ ] physics
-- [ ] AI
-- [ ] networking
-- [ ] animation
 - [ ] UI
-- [ ] input
+- [x] input
 - [ ] be done with this
 
 # DONE
