@@ -19,10 +19,10 @@ class Renderer:
             for j in range(len(self.current_frame.frame_buffer[i])):
                 if self.current_frame.frame_buffer[i][j] is not None:
                     if self.current_frame.frame_buffer[i][j] != self.previous_frame.frame_buffer[i][j]:
-                        stdscr.addstr(i, j * 2, self.char, self.color.color_dict[self.current_frame.frame_buffer[i][j]])
+                        stdscr.addstr(i, j * 2, self.char, self.color.get_pair(self.current_frame.frame_buffer[i][j]))
                         if j * 2 + 1 < self.terminal_width * 2:
                             stdscr.addstr(i, j * 2 + 1, self.char,
-                                          self.color.color_dict[self.current_frame.frame_buffer[i][j]])
+                                          self.color.color_pair_dict[self.current_frame.frame_buffer[i][j]])
                 else:
                     stdscr.addstr(i, j * 2, self.char, self.color.BLACK)
                     if j * 2 + 1 < self.terminal_width * 2:

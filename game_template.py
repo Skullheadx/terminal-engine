@@ -44,6 +44,11 @@ class Game:
         self.p.update(tengine, dt)
         self.p.draw(tengine)
 
+        self.img = tengine.Image("Untitled.png")
+        self.img.resize(25, 25)
+        self.img.draw(tengine, 0, 0)
+
+
 
 class Player:
 

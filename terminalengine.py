@@ -5,6 +5,8 @@ import sys
 import os
 import math
 import threading
+import cv2
+
 from itertools import combinations
 
 from framebuffer import FrameBuffer
@@ -69,7 +71,8 @@ class TerminalEngine:
             is_running = self.update(self.stdscr)
             update(self, delta_time)
             self.renderer.render(self.stdscr)
-            # time.sleep(0.16)
+
+    # time.sleep(0.16)
 
     class Event:
 
@@ -106,25 +109,59 @@ class TerminalEngine:
         BLACK = 6
         CYAN = 7
         MAGENTA = 8
+        color_pair_dict = {}
+        color_pairs = {(255, 0, 0): RED,
+                            (0, 255, 0): GREEN,
+                            (255, 255, 0): YELLOW,
+                            (0, 0, 255): BLUE,
+                            (255, 255, 255): WHITE,
+                            (0, 0, 0): BLACK,
+                            (0, 255, 255): CYAN,
+                            (255, 0, 255): MAGENTA
+                            }
 
         def __init__(self):
-            curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLUE)
-            curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
-            curses.init_pair(3, curses.COLOR_YELLOW, curses.COLOR_BLACK)
-            curses.init_pair(4, curses.COLOR_BLUE, curses.COLOR_BLACK)
-            curses.init_pair(5, curses.COLOR_WHITE, curses.COLOR_BLACK)
-            curses.init_pair(6, curses.COLOR_BLACK, curses.COLOR_WHITE)
-            curses.init_pair(7, curses.COLOR_CYAN, curses.COLOR_BLACK)
-            curses.init_pair(8, curses.COLOR_MAGENTA, curses.COLOR_BLACK)
-            self.color_dict = {self.DEFAULT: curses.color_pair(5),
-                               self.RED: curses.color_pair(1),
-                               self.GREEN: curses.color_pair(2),
-                               self.YELLOW: curses.color_pair(3),
-                               self.BLUE: curses.color_pair(4),
-                               self.WHITE: curses.color_pair(5),
-                               self.BLACK: curses.color_pair(6),
-                               self.CYAN: curses.color_pair(7),
-                               self.MAGENTA: curses.color_pair(8)}
+            if curses.has_colors() and curses.can_change_color() and len(self.color_pair_dict) == 0:
+                curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLUE)
+                curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
+                curses.init_pair(3, curses.COLOR_YELLOW, curses.COLOR_BLACK)
+                curses.init_pair(4, curses.COLOR_BLUE, curses.COLOR_BLACK)
+                curses.init_pair(5, curses.COLOR_WHITE, curses.COLOR_BLACK)
+                curses.init_pair(6, curses.COLOR_BLACK, curses.COLOR_WHITE)
+                curses.init_pair(7, curses.COLOR_CYAN, curses.COLOR_BLACK)
+                curses.init_pair(8, curses.COLOR_MAGENTA, curses.COLOR_BLACK)
+                self.color_pair_dict = {self.DEFAULT: curses.color_pair(5),
+                                        self.RED: curses.color_pair(1),
+                                        self.GREEN: curses.color_pair(2),
+                                        self.YELLOW: curses.color_pair(3),
+                                        self.BLUE: curses.color_pair(4),
+                                        self.WHITE: curses.color_pair(5),
+                                        self.BLACK: curses.color_pair(6),
+                                        self.CYAN: curses.color_pair(7),
+                                        self.MAGENTA: curses.color_pair(8)}
+
+
+        def get(self, color):
+            if color not in self.color_pairs:
+                B, G, R = color
+                self.add_color(R, G, B)
+            return self.color_pairs[color]
+        def get_pair(self, pair):
+            if pair not in self.color_pair_dict:
+                self.add_color_pair(pair, pair, 0)
+            return self.color_pair_dict[pair]
+
+        def add_color(self, r, g, b):
+            curses.init_color(len(self.color_pairs), r, g, b)
+            self.color_pairs[(r, g, b)] = len(self.color_pairs)
+            self.add_color_pair(len(self.color_pairs), len(self.color_pairs), 0)
+
+
+        def add_color_pair(self, color, foreground, background):
+            curses.init_pair(color, foreground, background)
+            self.color_pair_dict[color] = curses.color_pair(color)
+
+
 
     class Draw:
         line_precision = 100
@@ -161,6 +198,13 @@ class TerminalEngine:
                 b = y1 - m * x1
                 for i in range((x2 - x1) * self.line_precision):
                     self.frame.set_pixel(x1 + i / self.line_precision, m * (x1 + i / self.line_precision) + b, color)
+
+        def draw_image(self, image, x, y):
+            width, height = image.get_size()
+            for i in range(height):
+                for j in range(width):
+                    b,g,r = image.get_pixel(j, i)
+                    self.frame.set_pixel(x + j, y + i, self.color.get((r, g, b)))
 
         @staticmethod
         def check_point(h, k, x, y, a, b):
@@ -200,7 +244,6 @@ class TerminalEngine:
         def collide_rect(self, rect):
             if self.x < rect.x + rect.width and self.x + self.width > rect.x and \
                     self.y < rect.y + rect.height and self.y + self.height > rect.y:
-
                 return True
             return False
 
@@ -304,3 +347,27 @@ class TerminalEngine:
 
         def draw(self, tengine):
             tengine.draw.rect2(self.rect)
+
+    class Image:
+        def __init__(self, file_name):
+            self.image = cv2.imread(file_name)
+            self.width, self.height = self.image.shape[:2]
+
+        def get_pixel(self, x, y):
+            return self.image[x, y]
+
+        def set_pixel(self, x, y, color):
+            self.image[x, y] = color
+
+        def get_size(self):
+            return self.width, self.height
+
+        def resize(self, width, height):
+            self.image = cv2.resize(self.image, (width, height))
+            self.width, self.height = self.image.shape[:2]
+
+        def draw(self, tengine, x, y):
+            tengine.draw.draw_image(self, x, y)
+
+        def __del__(self):
+            cv2.destroyAllWindows()
