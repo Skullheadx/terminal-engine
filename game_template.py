@@ -9,6 +9,13 @@ class Game:
         self.engine.run(self.update)
 
     def update(self, tengine, dt):
+        test = tengine.LargeText("abcdefghij")
+        test.draw(tengine, 0, 0, tengine.color.RED)
+        test2 = tengine.LargeText("klmnopqrst")
+        test2.draw(tengine, 0, 8, tengine.color.BLUE)
+        test3 = tengine.LargeText("uvwxyz")
+        test3.draw(tengine, 0, 16, tengine.color.GREEN)
+
         tengine.draw.ellipse(10, 15, 10, 10, tengine.color.BLUE)
 
         # NETHER PORTAL

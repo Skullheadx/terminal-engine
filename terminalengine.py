@@ -11,6 +11,7 @@ from itertools import combinations
 
 from framebuffer import FrameBuffer
 from renderer import Renderer
+from text import Text
 
 
 class TerminalEngine:
@@ -217,6 +218,18 @@ class TerminalEngine:
                     if check <= 1:
                         self.frame.set_pixel(x + j - 1 - width, y + i - 1 - height, color)
 
+        def text(self, x, y, text, color):
+            # for i in enumerate(text):
+                # self.frame.set_pixel(x+i, y, color)
+                # self.frame.frame_buffer[y][x+i[0]] = i[1];
+            pass
+
+        def largeText(self, x, y, render, color):
+            for i in range(len(render)):
+                for j in range(len(render[i])):
+                    if(render[i][j] == 1):
+                         self.frame.set_pixel(x + j, y + i, color)
+
     class Rect:
         def __init__(self, x, y, width, height, color):
             self.x = x
@@ -371,3 +384,35 @@ class TerminalEngine:
 
         def __del__(self):
             cv2.destroyAllWindows()
+
+    class Text:
+        def __init__(self):
+            pass;
+
+        # def draw(self, tengine, text, x, y, color):
+        #     tengine.draw.text(x, y, text, color)
+    class LargeText:
+        def __init__(self, text):
+            self.text = text
+            
+            self.render = []
+            line = []
+            for i in range(6):
+                line.append([])
+
+            for i in enumerate(self.text):
+                pixels = Text().letters[i[1]]
+                for j in range(6):
+                    if(j < len(pixels)):
+                        for k in range(len(pixels[j])):
+                            line[j].append(pixels[j][k])
+                    else:
+                        for k in range(len(pixels[0])):
+                            line[j].append(0)
+                    line[j].append(0)
+
+            self.render = line
+            
+        def draw(self, tengine, x, y, color):
+            tengine.draw.largeText(x, y, self.render, color)
+            
