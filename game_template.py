@@ -6,8 +6,10 @@ class Game:
         self.engine = TerminalEngine(50, 25)
         self.time = 0
         self.p = Player(self.engine, 10, 10)
+        self.img = self.engine.Image("Untitled.png")
+        self.img.resize(15, 15)
+        
         self.engine.run(self.update)
-
     def update(self, tengine, dt):
         test = tengine.LargeText("abcdefghij")
         test.draw(tengine, 0, 0, tengine.color.RED)
@@ -51,8 +53,7 @@ class Game:
         self.p.update(tengine, dt)
         self.p.draw(tengine)
 
-        self.img = tengine.Image("Untitled.png")
-        self.img.resize(15, 15)
+
         self.img.draw(tengine, 15, 15)
 
 
